@@ -1,0 +1,149 @@
+- name: Setup Ubuntu VM with Jenkins in Docker
+  hosts: all
+  become: yes
+  # Change to your git configs. If you want to use rsa you have to change it in deploy.sh since ed25519 is default there.
+  vars:
+    git_username: "bappelberg"
+    git_email: "benjamin.w.appelberg@gmail.com"
+    ssh_key_type: "ed25519"
+    ssh_key_path: "~/.ssh/id_ed25519"
+    jenkins_java_opts: >-
+      -Xlog:gc*=info:file=/var/jenkins_home/gc.log:time,uptime,level
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Upgrade all packages
+      apt:
+        upgrade: yes
+        update_cache: yes
+
+    - name: Perform dist-upgrade
+      apt:
+        upgrade: dist
+        update_cache: yes
+
+    - name: Install basic packages
+      apt:
+        name:
+          - git
+          - vim
+          - openssh-server
+          - openssh-client
+          - curl
+          - build-essential
+          - ca-certificates
+          - gnupg
+          - lsb-release
+          - python3
+          - python3-pip
+          - python3-venv
+          - htop
+          - fontconfig
+          - openjdk-17-jre
+          - docker.io
+          - net-tools
+        state: present
+
+    - name: Ensure Docker service is enabled and started
+      systemd:
+        name: docker
+        enabled: yes
+        state: started
+
+    - name: Configure Git global settings
+      git_config:
+        name: "{{ item.name }}"
+        value: "{{ item.value }}"
+        scope: global
+      loop:
+        - { name: 'user.name', value: '{{ git_username }}' }
+        - { name: 'user.email', value: '{{ git_email }}' }
+        - { name: 'core.editor', value: 'vim' }
+      become: no
+
+    - name: Create ~/.ssh directory
+      file:
+        path: "~/.ssh"
+        state: directory
+        mode: '0700'
+      become: no
+
+    - name: Generate SSH key if it does not exist
+      openssh_keypair:
+        path: "{{ ssh_key_path }}"
+        type: "{{ ssh_key_type }}"
+        comment: "{{ git_email }}"
+      become: no
+
+    - name: Display public SSH key
+      command: cat "{{ ssh_key_path }}.pub"
+      register: ssh_public_key
+      changed_when: false
+      become: no
+
+    - name: Show SSH public key
+      debug:
+        msg: "{{ ssh_public_key.stdout }}"
+
+    - name: Pull Jenkins Docker image
+      docker_image:
+        name: jenkins/jenkins
+        tag: lts
+        source: pull
+
+    - name: Create Jenkins home directory with proper permissions
+      file:
+        path: /var/jenkins_home
+        state: directory
+        mode: '0777'  # This gives full permissions, which we'll fix below
+        owner: 1000   # This is the UID for the jenkins user in the container
+        group: 1000   # This is the GID for the jenkins user in the container
+
+    - name: Run Jenkins container
+      docker_container:
+        name: jenkins
+        image: jenkins/jenkins:lts
+        state: started
+        restart_policy: always
+        published_ports:
+          - "8080:8080"
+        volumes:
+          - /var/jenkins_home:/var/jenkins_home
+        env:
+          JAVA_OPTS: "{{ jenkins_java_opts }}"
+
+    - name: Clean up unnecessary packages
+      apt:
+        autoremove: yes
+
+    - name: Update .bashrc with git branch colors
+      blockinfile:
+        path: ~/.bashrc
+        block: |
+          parse_git_branch() {
+            git branch 2> /dev/null | sed -e "/^[^*]/d" -e "s/* \(.*\)/(\1)/"
+          }
+          export PS1="\u@\h \[\e[32m\]\w \[\e[91m\]\$(parse_git_branch)\[\e[00m\]$ "
+        marker: "# {mark} ANSIBLE MANAGED BLOCK - GIT BRANCH COLORS"
+      become: no
+
+    - name: Verify installations
+      command: "{{ item }}"
+      register: verification
+      changed_when: false
+      loop:
+        - git --version
+        - java -version
+      become: no
+
+    - name: Show verification results
+      debug:
+        msg: "{{ verification.results | map(attribute='stdout_lines') | list }}"
+
+    - name: Print setup completion message
+      debug:
+        msg: "Ubuntu VM setup is complete. Jenkins is now running in Docker. Access Jenkins at http://<vm-ip>:8080"
