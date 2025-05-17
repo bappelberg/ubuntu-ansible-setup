@@ -1,0 +1,7 @@
+---
+docker_packages:
+  - docker.io
+  - docker-compose
+
+docker_users:
+  - "{{ ansible_user }}"

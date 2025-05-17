@@ -1,0 +1,8 @@
+---
+- name: Apply common configuration to all nodes
+  hosts: all
+  become: yes
+  roles:
+    - common
+
+- import_playbook: jenkins.yml

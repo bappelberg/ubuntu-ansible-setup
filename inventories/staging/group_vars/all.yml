@@ -1,0 +1,14 @@
+---
+# Git configuration
+git_username: "bappelberg"
+git_email: "benjamin.w.appelberg@gmail.com"
+
+# SSH Configuration
+ssh_key_type: "ed25519"
+ssh_key_path: "~/.ssh/id_ed25519"
+
+# Jenkins configuration
+jenkins_java_opts: >-
+  -Xlog:gc*=info:file=/var/jenkins_home/gc.log:time,uptime,level
+jenkins_home: "/var/jenkins_home"
+jenkins_http_port: 8080
