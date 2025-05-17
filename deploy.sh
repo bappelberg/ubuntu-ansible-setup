@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "Remember to execute the following command on new VM: sudo apt update && sudo apt install openssh-server -y sudo systemctl start ssh"
+echo "Remember to execute the following command on new VM: sudo apt update && sudo apt install openssh-server -y && sudo systemctl start ssh"
 
 echo "Enter IP address for VM (ansible_host):"
 read ansible_host
