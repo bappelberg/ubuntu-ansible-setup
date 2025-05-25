@@ -1,4 +1,5 @@
 ---
+# ubuntu-ansible-setup/playbooks/site.yml
 - name: Apply common configuration to all nodes
   hosts: all
   become: yes

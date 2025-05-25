@@ -1,4 +1,5 @@
 ---
+# ubuntu-ansible-setup/inventories/staging/group_vars/all.yml
 # Git configuration
 git_username: "bappelberg"
 git_email: "benjamin.w.appelberg@gmail.com"

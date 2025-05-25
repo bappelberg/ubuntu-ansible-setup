@@ -1,4 +1,5 @@
 ---
+# ubuntu-ansible-setup/roles/developer/tasks/git_setup.yml
 - name: Configure Git global settings
   git_config:
     name: "{{ item.name }}"

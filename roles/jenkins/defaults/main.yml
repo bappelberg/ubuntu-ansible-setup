@@ -1,4 +1,5 @@
 ---
+# ubuntu-ansible-setup/roles/jenkins/defaults/main.yml
 jenkins_image: jenkins/jenkins:lts
 jenkins_container_name: jenkins
 jenkins_home: /var/jenkins_home

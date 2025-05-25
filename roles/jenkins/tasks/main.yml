@@ -1,4 +1,4 @@
-# roles/jenkins/tasks/main.yml
+# ubuntu-ansible-setup/roles/jenkins/tasks/main.yml
 ---
 - name: Pull Jenkins Docker image
   docker_image:
