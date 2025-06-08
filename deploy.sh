@@ -1,10 +1,9 @@
 #!/bin/bash
-echo "Remember to execute the following command on new VM: sudo apt update && sudo apt install openssh-server -y && sudo systemctl enable ssh"
 
-echo "Enter IP address for VM (ansible_host):"
+echo "Enter IP address for VM (ansible_host; hostname -I | awk '{print $1}' in ubuntu vm):"
 read ansible_host
 
-echo "Enter username for SSH (ansible_user):"
+echo "Enter ubuntu user for SSH (ansible_user; whoami in ubuntu vm):"
 read ansible_user
 
 # Create or update inventory file with these values
@@ -16,6 +15,8 @@ EOL
 echo "Inventory file created/updated with following content:"
 cat inventories/staging/hosts
 
-cat ~/.ssh/id_ed25519.pub | ssh $ansible_user@$ansible_host "mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys && chmod 700 ~/.ssh"
+ssh-copy-id "$ansible_user@$ansible_host"
 
-echo "To run ansible, execute the following command: ansible-playbook -i inventories/staging/hosts playbooks/site.yml --limit ubuntu_vms --ask-become-pass"
+echo "#### VMWARE fusion debug tips ####"
+echo "1. ubuntu> Configure ssh:  sudo apt update && sudo apt install openssh-server -y && sudo systemctl enable ssh "
+echo "2. macOS> Bridge network: VMWARE tabs>Virtual Machine>Network Adapter>Bridged WiFi"
