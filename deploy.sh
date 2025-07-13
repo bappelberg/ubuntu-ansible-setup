@@ -1,4 +1,5 @@
 #!/bin/bash
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 echo "Enter IP address for VM (ansible_host; hostname -I | awk '{print $1}' in ubuntu vm):"
 read ansible_host
@@ -16,6 +17,7 @@ echo "Inventory file created/updated with following content:"
 cat inventories/staging/hosts
 
 ssh-copy-id "$ansible_user@$ansible_host"
+# scp "${SCRIPT_DIR}/bootstrap.sh" "${ansible_user}@${ansible_host}:/home/${ansible_user}", not possbile, need to activate ssh
 
 echo "#### VMWARE fusion debug tips ####"
 echo "1. ubuntu> Configure ssh:  sudo apt update && sudo apt install openssh-server -y && sudo systemctl enable ssh "

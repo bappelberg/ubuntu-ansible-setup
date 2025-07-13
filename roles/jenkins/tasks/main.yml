@@ -1,5 +1,16 @@
 # ubuntu-ansible-setup/roles/jenkins/tasks/main.yml
 ---
+- name: Check if Docker daemon is running
+  command: docker info
+  register: docker_status
+  failed_when: false
+  changed_when: false
+  check_mode: no
+
+- name: Skip Jenkins installation if Docker is not available
+  meta: end_play
+  when: docker_status.rc != 0
+
 - name: Pull Jenkins Docker image
   docker_image:
     name: "{{ jenkins_image.split(':')[0] }}"

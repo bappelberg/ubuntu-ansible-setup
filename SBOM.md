@@ -1,0 +1,3 @@
+- VM Fusion: Player Version 13.6.2 (24409261)
+- python3
+- bash

@@ -1,0 +1,2 @@
+ansible-playbook -i inventories/staging/hosts playbooks/site.yml --limit ubuntu_vms --ask-become-pass
+ansible-playbook -i inventories/staging/hosts playbooks/jenkins.yml --limit ubuntu_vms --ask-become-pass --check -v

@@ -10,6 +10,7 @@
     name: docker
     enabled: yes
     state: started
+  when: not ansible_check_mode
 
 - name: Add users to Docker group
   user:
@@ -17,3 +18,4 @@
     groups: docker
     append: yes
   loop: "{{ docker_users }}"
+  when: not ansible_check_mode

@@ -1,5 +1,17 @@
----
 # ubuntu-ansible-setup/roles/developer/tasks/git_setup.yml
+---
+- name: Check if git is available
+  command: which git
+  register: git_available
+  failed_when: false
+  changed_when: false
+  check_mode: no
+
+- name: Skip Git configuration if Git is not installed
+  debug:
+    msg: "Git is not installed. Skipping Git configuration."
+  when: git_available.rc != 0
+
 - name: Configure Git global settings
   git_config:
     name: "{{ item.name }}"
@@ -10,3 +22,4 @@
     - { name: 'user.email', value: '{{ git_email }}' }
     - { name: 'core.editor', value: 'vim' }
   become: no
+  when: git_available.rc == 0
