@@ -1,11 +1,23 @@
 #!/bin/bash
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-echo "Enter IP address for VM (ansible_host; hostname -I | awk '{print $1}' in ubuntu vm):"
-read ansible_host
-
-echo "Enter ubuntu user for SSH (ansible_user; whoami in ubuntu vm):"
-read ansible_user
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --ip)
+            ansible_host="$2"
+            shift 2
+            ;;
+        --user)
+            ansible_user="$2"
+            shift 2
+            ;;
+        *)
+            echo "Okänt argument: $1"
+            exit 1
+            ;;
+    esac
+done
 
 # Create or update inventory file with these values
 cat > inventories/staging/hosts <<EOL

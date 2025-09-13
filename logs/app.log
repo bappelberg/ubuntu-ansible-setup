@@ -1,0 +1,5 @@
+2025-08-23 09:18:32,387 [CRITICAL] __main__: error division by zero
+2025-08-23 09:18:34,663 [CRITICAL] __main__: error division by zero
+2025-08-23 09:19:15,072 [CRITICAL] __main__: error division by zero
+2025-08-23 09:22:08,693 [    INFO] __main__: Started main
+2025-08-23 09:22:10,328 [    INFO] __main__: Successfully executed

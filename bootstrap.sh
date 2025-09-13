@@ -15,3 +15,4 @@ fi
 sudo apt install vim -y
 
 hostname -I | cut -d' ' -f1
+# 172.20.10.14
