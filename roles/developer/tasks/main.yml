@@ -6,6 +6,9 @@
 - name: Include SSH setup tasks
   include_tasks: ssh_setup.yml
 
+- name: Include Neovim setup tasks
+  include_tasks: neovim_setup.yml
+
 - name: Update .bashrc with git branch colors and aliases
   blockinfile:
     path: "~/.bashrc"

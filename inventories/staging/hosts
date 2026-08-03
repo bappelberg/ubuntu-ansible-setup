@@ -1,2 +1,2 @@
 [ubuntu_vms]
-ubuntu-vm ansible_host=172.20.10.7 ansible_user=user1 ansible_ssh_private_key_file=~/.ssh/id_ed25519
+ubuntu-vm ansible_host=192.168.139.146 ansible_user=u096927 ansible_ssh_private_key_file=~/.ssh/id_ed25519

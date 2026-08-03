@@ -1,0 +1,21 @@
+---
+# ubuntu-ansible-setup/roles/developer/tasks/neovim_setup.yml
+- name: Install Neovim
+  apt:
+    name: neovim
+    state: present
+  become: yes
+
+- name: Create Neovim config directory
+  file:
+    path: "~/.config/nvim"
+    state: directory
+    mode: '0755'
+  become: no
+
+- name: Deploy Neovim init.lua (bootstraps lazy.nvim)
+  copy:
+    src: nvim/init.lua
+    dest: "~/.config/nvim/init.lua"
+    mode: '0644'
+  become: no
